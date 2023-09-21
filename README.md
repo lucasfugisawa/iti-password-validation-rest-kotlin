@@ -1,6 +1,7 @@
 # @itidigital Backend Challenge: Password Validation API - Kotlin Implementation
 
-_**This project is the Kotlin version of the Java implementation that can be found at https://github.com/lucasfugisawa/iti-password-validation-rest-kotlin**_
+- #### This project is the Kotlin version of the Java implementation that can be found at https://github.com/lucasfugisawa/iti-password-validation-rest-kotlin
+- #### Automated tests are available in the Java implementation, but still pending in this Kotlin implementation.
 
 This is a possible solution to the backend challenge found at: https://github.com/itidigital/backend-challenge
 
