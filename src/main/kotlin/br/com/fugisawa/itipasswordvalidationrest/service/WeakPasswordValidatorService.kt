@@ -8,10 +8,9 @@ import org.springframework.stereotype.Service
 @Service
 @Profile("weakValidation")
 class WeakPasswordValidatorService : PasswordValidationService {
-    private val passwordValidator: PasswordValidator
 
-    init {
-        passwordValidator = PredicatesPasswordValidator.builder()
+    private val passwordValidator by lazy {
+        PredicatesPasswordValidator.builder()
             .withMinLength(4)
             .withNoWhiteSpaces()
             .build()
