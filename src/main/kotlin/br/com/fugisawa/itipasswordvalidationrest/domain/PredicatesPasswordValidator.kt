@@ -6,15 +6,11 @@ class PredicatesPasswordValidator(
 
     companion object {
         val DEFAULT_SPECIAL_CHARACTERS: CharSequence = "!@#$%^&*()-+"
-        val HAS_UPPERCASE: (CharSequence) -> Boolean =
-            { password: CharSequence -> password.matches(".*[A-Z].*".toRegex()) }
-        val HAS_LOWERCASE: (CharSequence) -> Boolean =
-            { password: CharSequence -> password.matches(".*[a-z].*".toRegex()) }
+        val HAS_UPPERCASE: (CharSequence) -> Boolean = { password: CharSequence -> password.matches(".*[A-Z].*".toRegex()) }
+        val HAS_LOWERCASE: (CharSequence) -> Boolean = { password: CharSequence -> password.matches(".*[a-z].*".toRegex()) }
         val HAS_DIGIT: (CharSequence) -> Boolean = { password: CharSequence -> password.matches(".*[0-9].*".toRegex()) }
-        val NO_REPEATED_CHARS: (CharSequence) -> Boolean =
-            { password: CharSequence -> !password.matches(".*(.).*\\1.*".toRegex()) }
-        val NO_WHITE_SPACES: (CharSequence) -> Boolean =
-            { password: CharSequence -> !password.matches(".*\\s.*".toRegex()) }
+        val NO_REPEATED_CHARS: (CharSequence) -> Boolean = { password: CharSequence -> !password.matches(".*(.).*\\1.*".toRegex()) }
+        val NO_WHITE_SPACES: (CharSequence) -> Boolean = { password: CharSequence -> !password.matches(".*\\s.*".toRegex()) }
 
         fun builder() = PredicatesPasswordValidatorBuilder()
 
