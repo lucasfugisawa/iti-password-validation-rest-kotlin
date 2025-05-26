@@ -1,8 +1,32 @@
 package br.com.fugisawa.itipasswordvalidationrest.domain
 
 class PredicatesPasswordValidator(
-    val predicates: MutableSet<((CharSequence) -> Boolean)>,
+    predicates: Set<(CharSequence) -> Boolean> = emptySet(),
+    minimumLength: Int? = null,
+    maximumLength: Int? = null,
+    specialCharacters: CharSequence? = null,
+    hasUpperCase: Boolean = false,
+    hasLowerCase: Boolean = false,
+    hasDigit: Boolean = false,
+    noRepeatedChars: Boolean = false,
+    noWhiteSpaces: Boolean = false,
 ) : PasswordValidator {
+
+    val predicates: Set<(CharSequence) -> Boolean>
+
+    init {
+        val p = mutableSetOf<(CharSequence) -> Boolean>()
+        if (minimumLength != null) p.add { s: CharSequence -> s.length >= minimumLength }
+        if (maximumLength != null) p.add { s: CharSequence -> s.length <= maximumLength }
+        if (specialCharacters != null) p.add { s: CharSequence -> s.matches(".*[$specialCharacters].*".toRegex()) }
+        if (hasUpperCase) p.add(HAS_UPPERCASE)
+        if (hasLowerCase) p.add(HAS_LOWERCASE)
+        if (hasDigit) p.add(HAS_DIGIT)
+        if (noRepeatedChars) p.add(NO_REPEATED_CHARS)
+        if (noWhiteSpaces) p.add(NO_WHITE_SPACES)
+        this.predicates = predicates + p
+    }
+
 
     companion object {
         val DEFAULT_SPECIAL_CHARACTERS: CharSequence = "!@#$%^&*()-+"
@@ -11,62 +35,6 @@ class PredicatesPasswordValidator(
         val HAS_DIGIT: (CharSequence) -> Boolean = { password: CharSequence -> password.matches(".*[0-9].*".toRegex()) }
         val NO_REPEATED_CHARS: (CharSequence) -> Boolean = { password: CharSequence -> !password.matches(".*(.).*\\1.*".toRegex()) }
         val NO_WHITE_SPACES: (CharSequence) -> Boolean = { password: CharSequence -> !password.matches(".*\\s.*".toRegex()) }
-
-        fun builder() = PredicatesPasswordValidatorBuilder()
-
-        class PredicatesPasswordValidatorBuilder {
-            private val predicates = mutableSetOf<((CharSequence) -> Boolean)>()
-
-            fun withPredicate(predicate: ((CharSequence) -> Boolean)): PredicatesPasswordValidatorBuilder {
-                predicates.add(predicate)
-                return this
-            }
-
-            fun withMinLength(minLength: Int): PredicatesPasswordValidatorBuilder {
-                val p = { s: CharSequence -> s.length >= minLength }
-                predicates.add(p)
-                return this
-            }
-
-            fun withMaxLength(maxLength: Int): PredicatesPasswordValidatorBuilder {
-                val p = { s: CharSequence -> s.length <= maxLength }
-                predicates.add(p)
-                return this
-            }
-
-            fun withSpecialChar(specialChars: CharSequence): PredicatesPasswordValidatorBuilder {
-                val p = { s: CharSequence -> s.matches(".*[$DEFAULT_SPECIAL_CHARACTERS].*".toRegex()) }
-                predicates.add(p)
-                return this
-            }
-
-            fun withUpperCase(): PredicatesPasswordValidatorBuilder {
-                predicates.add(HAS_UPPERCASE)
-                return this
-            }
-
-            fun withLowerCase(): PredicatesPasswordValidatorBuilder {
-                predicates.add(HAS_LOWERCASE)
-                return this
-            }
-
-            fun withDigit(): PredicatesPasswordValidatorBuilder {
-                predicates.add(HAS_DIGIT)
-                return this
-            }
-
-            fun withNoRepeatedChars(): PredicatesPasswordValidatorBuilder {
-                predicates.add(NO_REPEATED_CHARS)
-                return this
-            }
-
-            fun withNoWhiteSpaces(): PredicatesPasswordValidatorBuilder {
-                predicates.add(NO_WHITE_SPACES)
-                return this
-            }
-
-            fun build() = PredicatesPasswordValidator(predicates)
-        }
     }
 
     override fun isValid(password: CharSequence) = predicates.all { it(password) }
